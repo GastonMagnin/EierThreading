@@ -9,12 +9,14 @@ public class CheckModul implements Runnable {
 	}
 	@Override
 	public void run() {
-		//TODO  condition
 		while(true) {
 			try {
-			crb.checkEgg();
+			if(!crb.checkEgg()) {
+				System.out.println("Ei aussortiert");
+			}
 				Thread.sleep(50);
-			} catch (InterruptedException|BufferUnderflowException e) {
+			} catch (BufferUnderflowException e) {
+			} catch (InterruptedException e) {
 			}
 		}
 	}

@@ -26,7 +26,7 @@ public class Ei {
 	public Ei(String gewicht, String legedatum, String defekt) {
 		this.gewicht = Integer.parseInt(gewicht);
 		this.legedatum = legedatum;
-		this.defekt = defekt.equals(true);
+		this.defekt = defekt.equals("true");
 	}
 
 	private void legeEi(int ausschussrate) {

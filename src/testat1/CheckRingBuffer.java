@@ -32,14 +32,14 @@ public class CheckRingBuffer {
 
 		}
 		buffer[inputPosition.get() % 50] = input;
-		System.out.println(eggsInBuffer.get());
 		eggsInBuffer.incrementAndGet();
-		System.out.println(eggsInBuffer.get());
 		synchronized (inputPosition) {
 			inputPosition.incrementAndGet();
 			inputPosition.notifyAll();
 		}
-		return;
+		if(outputPosition.get() > checkPosition.get() || checkPosition.get() > inputPosition.get()) {
+			System.err.println("Kapput");
+		}
 	}
 
 	public boolean checkEgg() throws BufferUnderflowException {
@@ -59,7 +59,6 @@ public class CheckRingBuffer {
 				checkPosition.getAndIncrement();
 				checkPosition.notifyAll();
 			}
-			System.out.println("checkOut");
 			return false;
 		}
 		synchronized (checkPosition) {

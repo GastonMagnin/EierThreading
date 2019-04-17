@@ -7,8 +7,11 @@ import java.nio.BufferOverflowException;
 import java.util.ArrayList;
 
 public class InputModul implements Runnable {
+	//Name of the file(s) containing the eggs
 	String filename;
+	//CheckRingBuffer this InputModul will put the eggs in
 	CheckRingBuffer crb;
+	//List of paths found in the current directory matching filename[number].txt will be filled in generatePaths()
 	ArrayList<String> paths = new ArrayList<String>();
 
 	public InputModul(String filename, CheckRingBuffer crb) {
@@ -30,6 +33,7 @@ public class InputModul implements Runnable {
 	 */
 	private void generatePaths(String filename, CheckRingBuffer crb) {
 		synchronized (paths) {
+			//If paths are already generated return
 			if (crb.getPathsGenerated())
 				return;
 			File dir = new File(".");
@@ -55,6 +59,7 @@ public class InputModul implements Runnable {
 		Ei[][] eggs = null;
 		// Repeat while there are files that haven't been converted to Eggs
 		while (!paths.isEmpty()) {
+			//Get a path from paths and get the eggs from the file path specifies
 			synchronized (paths) {
 				// make sure paths isn't empty
 				if (paths.isEmpty())
@@ -63,17 +68,15 @@ public class InputModul implements Runnable {
 					eggs = EierFileConverter.fileToEier(paths.get(0));
 					paths.remove(0);
 				} catch (IOException e) {
-					System.out.println("ioioioiioii");
 				}
 			}
+			//Enqueue all Eggs
 			for (Ei[] karton : eggs) {
 				for (Ei egg : karton) {
-					// Enqueue egg, if egg can't be enqueued wait 50ms and try again
 					while (!(egg == null)) {
 						try {
 							crb.enqueue(egg);
 							egg = null;
-
 						} catch (BufferOverflowException e) {
 							System.out.println("Karton voll");
 						}
@@ -86,7 +89,6 @@ public class InputModul implements Runnable {
 			}
 
 		}
-		System.out.println(Thread.currentThread() + " out");
 
 	}
 
